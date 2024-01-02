@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Nfe extends Model
 {
@@ -15,6 +16,7 @@ class Nfe extends Model
         'numero',
         'valor',
         'data_emissao',
+        'cnpj_remetente',
         'nome_remetente',
         'cnpj_transportador',
         'nome_transportador',
