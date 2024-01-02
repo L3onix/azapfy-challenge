@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\NfeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +17,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    try{
+        return $request->user();
+    }catch(Exception $e) {
+        return response()->json([
+            'message' => 'Internal error',
+            'error' => $e->getMessage()
+        ], 500);
+    }
 });
 
-Route::get('/nfe', function (Request $request) {
-    return 'adsfasdf';
+Route::controller(UserController::class)->group(function () {
+    Route::post('/auth/register', 'createUser');
+    Route::post('/auth/login', 'loginUser');
 });
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::resource('nfe', NfeController::class);
+});
+
