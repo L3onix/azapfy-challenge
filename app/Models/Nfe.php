@@ -11,7 +11,6 @@ class Nfe extends Model
     use HasFactory;
 
     protected $table = "nfes";
-    protected $primaryKey = "nfe_id";
     protected $fillable = [
         'numero',
         'valor',
@@ -20,6 +19,7 @@ class Nfe extends Model
         'nome_remetente',
         'cnpj_transportador',
         'nome_transportador',
+        'user_id'
     ];
 
     /**
