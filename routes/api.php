@@ -33,6 +33,9 @@ Route::controller(UserController::class)->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::resource('nfe', NfeController::class);
+    Route::get('/nfe/{nfe}', [NfeController::class, 'show']);
+    Route::get('/nfe', [NfeController::class, 'index']);
+    Route::post('/nfe', [NfeController::class, 'store']);
+    Route::put('/nfe/{nfe}', [NfeController::class, 'update']);
+    Route::delete('/nfe/{nfe}', [NfeController::class, 'destroy']);
 });
-
