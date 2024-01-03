@@ -42,6 +42,87 @@
                         "example": "Total Express"
                     }
                 }
+            },
+            "NfeBodyInput": {
+                "type": "object",
+                "properties": {
+                    "numero": {
+                        "type": "string",
+                        "example": "123456789"
+                    },
+                    "valor": {
+                        "type": "float",
+                        "example": 439.99
+                    },
+                    "data_emissao": {
+                        "type": "date",
+                        "example": "2003-01-01"
+                    },
+                    "cnpj_remetente": {
+                        "type": "string",
+                        "example": "33272953000178"
+                    },
+                    "nome_remetente": {
+                        "type": "string",
+                        "example": "Amazon"
+                    },
+                    "cnpj_transportador": {
+                        "type": "string",
+                        "example": "33549999000198"
+                    },
+                    "nome_transportador": {
+                        "type": "string",
+                        "example": "Total Express"
+                    }
+                }
+            },
+            "500": {
+                "description": "Internal error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Exception error"
+                                },
+                                "error": {
+                                    "type": "string",
+                                    "example": "Fatal error: Uncaught exception 'Exception'"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation error"
+                                },
+                                "error": {
+                                    "type": "object",
+                                    "properties": {
+                                        "numero": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The numero has already been taken."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "securitySchemes": {
@@ -54,7 +135,7 @@
         }
     },
     "paths": {
-        "/api/nfe/{id}": {
+        "/api/nfe/{nfe}": {
             "get": {
                 "security": [
                     {
@@ -66,13 +147,40 @@
                 ],
                 "summary": "Get NFE by id",
                 "description": "Get a NFE by id",
-                "operationId": "e9a7cf56e37093c28b01e2bea17c487f",
+                "parameters": [
+                    {
+                        "name": "nfe",
+                        "description": "NFE id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Success request"
+                        "description": "Success request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "nfe": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Nfe"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Internal error!"
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             },
@@ -87,13 +195,37 @@
                 ],
                 "summary": "Update a NFE by id",
                 "description": "",
-                "operationId": "896199d8b5c517c1a4e85e7ca7d7630d",
+                "parameters": [
+                    {
+                        "name": "nfe",
+                        "description": "NFE id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/NfeBodyInput"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success request"
                     },
-                    "400": {
-                        "description": ""
+                    "401": {
+                        "$ref": "#/components/schemas/401"
+                    },
+                    "500": {
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             },
@@ -108,18 +240,68 @@
                 ],
                 "summary": "Delete a NFE by id",
                 "description": "",
-                "operationId": "772242f772809e39f02c145705db0b30",
+                "parameters": [
+                    {
+                        "name": "nfe",
+                        "description": "NFE id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success request"
                     },
-                    "400": {
-                        "description": ""
+                    "500": {
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             }
         },
         "/api/nfe": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "nfe"
+                ],
+                "summary": "List NFEs by user id",
+                "description": "List NFEs by user id",
+                "responses": {
+                    "200": {
+                        "description": "Success request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "nfes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "$ref": "#/components/schemas/Nfe"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/schemas/500"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -131,13 +313,25 @@
                 ],
                 "summary": "Create a new NFE",
                 "description": "",
-                "operationId": "b76fbceb73677e56c91eb1ea95f07dd2",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/NfeBodyInput"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "Success request"
                     },
-                    "400": {
-                        "description": ""
+                    "401": {
+                        "$ref": "#/components/schemas/401"
+                    },
+                    "500": {
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             }
@@ -157,6 +351,9 @@
                 "responses": {
                     "200": {
                         "description": "Success request"
+                    },
+                    "500": {
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             }
@@ -199,7 +396,7 @@
                         "description": "Validate error"
                     },
                     "500": {
-                        "description": "Internal error"
+                        "$ref": "#/components/schemas/500"
                     }
                 }
             }
